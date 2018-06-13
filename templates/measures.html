@@ -1,205 +1,406 @@
+<!DOCTYPE html>
+<html>
 <head>
-    <title>Measure - Home</title>
-    <meta charset="utf-8">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+        <title>Measure - Home</title>
+        <meta charset="utf-8">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+<body onload="loadFun(event, 'Track')">
 
-<body>
-
-  <nav class="navbar navbar-default" style="background-color: rgba(24, 41, 43, 0.91);">
-      <div class="container-fluid">
-      <div id="navbar"  class="collapse navbar-collapse">
+        
+    <nav class="navbar navbar-default" style="background-color: rgba(24, 41, 43, 0.91);">
+        <div class="container-fluid">
+        <div id="navbar"  class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
             <li><a href="/stracker">STRACKER</a></li>
             <li><a href="/home">Home</a></li>
             <li><a href="/projects">Projects</a></li>
             <li><a href="/account">Account</a></li>
         </ul>
-      </div>
-      </div>
-  </nav>
-
-  <h3 class="ptitle"> Project: {{pname}} </h3>
-  <hr>
-  
-
-  <form class="ptitle" name=gform action="", method="post" style="text-align: center;">
-    <div class="btn-group">
-    <input type = "submit" name = "commbut" value="Comments" class="btn btn-success" />
-    <input type = "submit" name = "opndbut" value="Operands" class="btn btn-success" />
-    <input type = "submit" name = "opbut" value="Operators" class="btn btn-success" />
-    <input type = "submit" name = "ccbut" value="Complexity" class="btn btn-success" />
-    </div>
-    <div class="btn-group">
-        <input type = "submit" name = "commbut2" value="Comments A" class="btn btn-primary" />
-        <input type = "submit" name = "opndbut2" value="Operands A" class="btn btn-primary" />
-        <input type = "submit" name = "opbut2" value="Operators A" class="btn btn-primary" />
-        <input type = "submit" name = "ccbut2" value="Complexity A" class="btn btn-primary" />
         </div>
-  </form>
+        </div>
+    </nav>
 
+    <br>
+    <h3 class="ptitle"> Project: {{pname}} </h3>
 
-    <div class="container" align="left">
-        <embed type="image/svg+xml" src= {{ gdata|safe }} />
-    </div>
-  <hr>
-  <div style="width: 100%">
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'Track')"> Track </button>
+  <button class="tablinks" onclick="openCity(event, 'Import')"> Import </button>
+  <button class="tablinks" onclick="openCity(event, 'Predict')"> Predict </button>
+</div>
 
-        <div class="sscore" style="margin-left: 15%; display: inline-block; ">
+<div id="Track" class="tabcontent">
+    
+    <div style="margin-top: 20px; float:left; height: 90%; width: 19%; background-color:rgb(211, 208, 208); border-radius: 8px">
+
+        <div style="width: 90%; margin-left: 5%; background-color:white;">
+                    <h2 style="text-align: center; margin-top: 10%; letter-spacing: 1px"> Metrics </h2>
+                    <h4 class="metr" style="margin-left: 2%;"> Total lines: {{ metd["Total Lines"] }} 
+                            ({{ metd["Total Lines added"] }})</h4>
+                    <h4 class="metr" style="margin-left: 2%;"> Code lines: {{ metd["Code Lines"] }}  
+                            ({{ metd["Code Lines added"] }}) </h4>
+                    <h4 class="metr" style="margin-left: 2%;"> Comments: {{ metd["Comments"] }} 
+                            ({{ metd["Comments added"] }}) </h4>
+                    <h4 class="metr" style="margin-left: 2%;"> Classes: {{ metd["Classes"] }}  
+                            ({{ metd["Classes added"] }}) </h4> 
+                    <h4 class="metr" style="margin-left: 2%;"> Functions: {{ metd["Functions"] }}  
+                            ({{ metd["Functions added"] }}) </h4> 
+                    <h4 class="metr" style="margin-left: 2%;"> Violations: {{ metd["Violations"] }}  
+                            ({{ metd["Violations added"] }}) </h4> 
+                    <h4 class="metr" style="margin-left: 2%;"> Code_smells: {{ metd["Code_smells"] }}  
+                            ({{ metd["Code_smells added"] }}) </h4> 
+                    <h4 class="metr" style="margin-left: 2%;"> Bugs: {{ metd["Bugs"] }}  
+                            ({{ metd["Bugs added"] }}) </h4>
+        </div>
+
+        <div style="width: 90%; margin-left: 5%; margin-top: 10%; background-color:white;">
+
+        <h2 style="text-align: center; margin-top: 10%; letter-spacing: 1px"> Score </h2>
+                
+        <div class="sscore" style="margin-left: 5%;">
                 <p> Last Score </p>
                 {% for star in pstars %}
-                  <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
                 {% endfor %}
         </div>
-
-      <div class="sscore" style="margin-left: 15%; display: inline-block; ">
-          <p> Current Score </p>
-          {% for star in stars %}
+        <div class="sscore" style="margin-left: 5%;">
+            <p> Current Score </p>
+            {% for star in stars %}
             <span class="fa fa-star checked"></span>
-          {% endfor %}
-      </div>
-
-      <div class="sscore" style="margin-left: 15%; display: inline-block; ">
+            {% endfor %}
+        </div>
+        <div class="sscore" style="margin-left: 5%;">
             <p> Progress </p>
             {% if pstars|length > stars|length %}
                 <span class="fa fa-arrow-circle-down" style="color: rgb(201, 57, 31)"></span>
             {% else %}
                 <span class="fa fa-arrow-circle-up" style="color: rgb(20, 173, 41)"></span>
             {% endif %}
-      </div>
-  </div>
-  <hr>
-  <br>
-    <form action="" method="post" class="subform">
-    <div style="width: 100%; height: 32px; text-align: center; background-color: rgb(250, 174, 174);">
-        <p style="font-size: 20px; font-weight: 500; color: rgb(37, 37, 37)"> Enter new data </p>
-    </div>
-    <br>
-    <br>
-    <div style="height: 225px;">
-      <div style="width: 100%; height: 20%; text-align: center;">  
-      
-          {{ form.codelines.label }}
-          {{ form.codelines }}
-    
-          {{ form.commlines.label(class_="ftext") }}
-          {{ form.commlines }}
-      
-          {{ form.operlines.label(class_="ftext") }}
-          {{ form.operlines() }} 
-      
-    </div>
-    <div style="width: 33.3%; height: 80%; float: left; text-align: center;">
-            {{ form.addbut(class_="addbut") }}
-    </div>
-    <div style="width: 33.3%; height: 80%; float: left; text-align: center;">
-            {{ form.importbutton(class_="importbut") }}
-    </div>
-    <div style="width: 33.3%; height: 80%; float: right; text-align: center;">
-        {{ form.delbutton(class_="delbut") }}
-    </div>
-      {{ form.csrf_token }}
-    </div>
-    <br>
-    <div style="width: 100%; height: 32px; text-align: center; background-color: rgb(250, 174, 174);">
-            <p style="font-size: 20px; font-weight: 500;"> - </p>
         </div>
-    </form>
+    </div>
 
-    <br>
-    <hr>
-    <br>
+        <div style="width: 90%; margin-left: 5%; margin-top: 10%; background-color:white;">
+        <form class="gbutons" name=gform action="", insubmit="", method="post">
+                <div class="containerlist">
+                        
+                        <h2 style="text-align: center; margin-top: 10%;"> Charts</h2>
+                      <ul>
+                      <li>
+                        <input type="radio" id="option1" name="options" value="opComments">
+                        <label for="option1"> Comment lines </label>
+                      </li>
+
+                      <li>
+                        <input type="radio" id="option2" name="options" value="opCode_smells">
+                        <label for="option2"> Code smells </label>
+                      </li>
+
+                      <li>
+                        <input type="radio" id="option3" name="options" value="opViolations">
+                        <label for="option3"> Violations </label>
+                      </li>
+
+                      <li>
+                        <input type="radio" id="option4" name="options" value="opFunctions">
+                        <label for="option4"> Functions </label>
+                      </li>
+
+                      <li>
+                        <input type="radio" id="option5" name="options" value="opComplexity">
+                        <label for="option5"> Classes </label>
+                      </li>
+
+                    </ul>
+                    </div>
+                    <p><input class="btn btn-primary" type="submit" name="grafbut" value="Ok" style="width: 50%; margin-left: 25%;"></p>
+                </form>
+            </div>
+
+    </div>
+            
+    <div style="float: right; width: 80%">
+        <embed type="image/svg+xml" src= {{ gdata1|safe }} />
+        <br>
+        <embed type="image/svg+xml" src= {{ gdata2|safe }} />
+        <br>
+    </div>
+
+</div>
+
+<div id="Import" class="tabcontent">
+    
+        <form action="" method="post" class="subform">
+                <br>
+                <br>
+                <div style="height: 225px;">
+               
+                <div style="width: 33.3%; height: 80%; float: left; text-align: center;">
+                    {{ form.codelines.label(class_="plabel") }}
+                    {{ form.codelines(class_="ptxt") }}
+                </div>
+                <div style="width: 33.3%; height: 80%; float: left; text-align: center;">
+                        {{ form.importbutton(class_="importbut") }}
+                </div>
+                <div style="width: 33.3%; height: 80%; float: right; text-align: center;">
+                    {{ form.delbutton(class_="delbut") }}
+                </div>
+                  {{ form.csrf_token }}
+                </div>
+                <br>
+                </form>
+                <p style="margin-left: 5%;"> <b>Import data</b> - Enter Sonarqube project name that you want to import and
+                    push Import button <p>
+                <p style="margin-left: 5%;"> <b>Delete data</b> - Push Delete last button if you want to delete
+                    last registration of your project<p>
+                <br>
+                <br>
+</div>
+
+<div id="Predict" class="tabcontent">
+    
     <form class="ptitle" name=gform action="", method="post" style="text-align: center;">
-        <div class="btn-group">
-            <input type = "submit" name = "arb5" value="Forecast 5" class="btn btn-primary" />
-            <input type = "submit" name = "arb10" value="Forecast 10" class="btn btn-primary" />
-            <input type = "submit" name = "arb20" value="Forecast 20" class="btn btn-primary" />
-        </div>
+            <div class="btn-group">
+                <input type = "submit" name = "arb5" value="Forecast" class="btn btn-primary" />
+            </div>
     </form>
-    
-    
-        <div class="container" align="left">
-            <embed type="image/svg+xml" src= {{ garima|safe }} />
-        </div>
+        
+        
+    <div class="container" align="left">
+        <embed type="image/svg+xml" src= {{ garima|safe }} />
+    </div>
+    <br>
+    <br>
 
-  <hr>
-    <p> Kibana frame </p>
-  <hr>
+</div>
+<br>
+<br>
 
-  <style>
+<script>
+function openCity(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
 
-    body {
-        /*background: radial-gradient(600px at 50% 50% , rgb(201, 176, 176) 20%, rgba(177, 169, 169, 0.295) 70%);*/
-        background: white;
+function loadFun(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    tablinks[0].className = tablinks[0].className.replace(" active", "");
+    document.getElementById(cityName).style.display = "block";
+}
+</script>
+     
+    <style>
+        body {
+            font-family: Arial;
+            background: white;
+            }
+
+        .tab {
+            margin-left: 2.5%;
+            width: 95%;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f7f6f6;
+        }
+
+        .tab button {
+            background-color: inherit;
+            float: left;
+            width: 10%;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+        .tab button:hover {
+            background-color: #d6c2c2;
+        }
+
+        .tab button.active {
+            background-color: white;
+            border-bottom: none;
+            border-top: 1px solid rgb(84, 84, 158);
+            border-right: 1px solid rgb(84, 84, 158);
+            border-left: 1px solid rgb(84, 84, 158);
+        }
+
+        .tabcontent {
+            margin-left: 2.5%;
+            width: 95%;
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+
+        .ftext {
+            margin-left: 2%;
+        }
+
+        .plabel {
+            margin-top: 5%;
+            margin-left: 1%;
+            color: rgb(31, 29, 29)
+        }
+
+        .ptxt {
+            margin-top: 5%;
+            margin-left: 1%;
+        }
+
+        .importbut {
+            width: 90%;
+            height: 50%;
+            color: rgb(31, 29, 29) 
+        }
+
+        .delbut {
+            width: 90%;
+            height: 50%;
+            color: rgb(31, 29, 29);
+            margin-left: 5%;
+        }
+
+        .sscore {
+            font-size: 16px;
+            letter-spacing: 1px;
+            word-spacing: 0px;
+            color: rgb(31, 28, 27);
+        }
+
+        .metr {
+            font-size: 15px;
+            color: rgb(31, 28, 27);
+        }
+
+        .gbutons {
+            margin-left: 5%;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: rgb(36, 33, 33);
+        }
+
+        .ptitle {
+            text-align: center;
+            font-size: 60px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            word-spacing: -8px;
+            color: rgb(36, 33, 33);
+            text-shadow: 
+                -1px -1px 0 firebrick,
+                -2px -2px 0 firebrick,
+                -3px -3px 0 firebrick,
+                -4px -4px 0 firebrick,
+                -5px -5px 0 firebrick,
+                -6px -6px 0 firebrick,
+                -7px -7px 0 firebrick,
+                -8px -8px 0 firebrick,
+        }
+
+        .subform {
+            font-family: 'Oswald', Helvetica, sans-serif;
+            font-size: 20px;
+            letter-spacing: 3px;
+            word-spacing: -8px;
+            color: tomato;
+        }
+
+        .checked {
+            color: orange;
+        }
+
+
+    .containerlist{
+        display: block;
+        position: relative;
+        width: 100%;
+        }
+
+    .containerlist ul{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        overflow: auto;
     }
 
-    .ftext {
-        margin-left: 2%;
+    .containerlist ul li{
+        color: rgb(117, 113, 113);
+        display: block;
+        position: relative;
+        float: left;
+        width: 100%;
     }
 
-    .addbut {
-        width: 90%;
-        height: 60%;
-        margin-top: 10%;
-        margin-left: 5%;
+    .containerlist ul li input[type=radio]{
+        position: absolute;
+        visibility: hidden;
     }
 
-    .importbut {
-        width: 90%;
-        height: 60%;
-        margin-top: 10%;
-        margin-left: 5%;
+    .containerlist ul li label{
+        display: block;
+        position: relative;
+        font-weight: 300;
+        font-size: 18px;
+        margin-left: 10%;
+        cursor: pointer;
     }
 
-    .delbut {
-        width: 90%;
-        height: 60%;
-        margin-top: 10%;
-        margin-left: 5%;
+    .containerlist ul li:hover label{
+        color: rgb(199, 223, 63);
     }
 
-    .sscore {
-        font-family: 'Oswald', Helvetica, sans-serif;
-        font-size: 30px;
-        font-weight: 600px;
-        letter-spacing: 4px;
-        word-spacing: -4px;
-        color: tomato;
+    .containerlist ul li .check{
+        display: block;
+        position: absolute;
+        border-radius: 100%;
+        width: 25px;
+        left: 20px;
     }
 
-
-    .ptitle {
-        text-align: center;
-        font-family: 'Oswald', Helvetica, sans-serif;
-        font-size: 60px;
-        transform: skewY(0deg);
-        letter-spacing: 4px;
-        word-spacing: -8px;
-        color: tomato;
-        text-shadow: 
-            -1px -1px 0 firebrick,
-            -2px -2px 0 firebrick,
-            -3px -3px 0 firebrick,
-            -4px -4px 0 firebrick,
-            -5px -5px 0 firebrick,
-            -6px -6px 0 firebrick,
-            -7px -7px 0 firebrick,
-            -8px -8px 0 firebrick,
+    .containerlist ul li:hover .check {
+        border: 5px solid rgb(199, 223, 63);
     }
 
-    .subform {
-        font-family: 'Oswald', Helvetica, sans-serif;
-        font-size: 20px;
-        letter-spacing: 3px;
-        word-spacing: -8px;
-        color: tomato;
+    .containerlist ul li .check::before {
+        display: block;
+        position: absolute;
+        content: '';
+        border-radius: 100%;
+        width: 15px;
+        left: 5px;
+        margin: auto;
     }
 
-    .checked {
-        color: orange;
+    input[type=radio]:checked ~ .check {
+        border: 5px solid rgb(10, 168, 94);
     }
+
+    .containerlist input[type=radio]:checked ~ label{
+        color: rgb(10, 168, 94);
+        font-weight: 700;
+        font-size: 22px;
+    }
+
 
   </style>
 

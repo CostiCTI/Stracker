@@ -77,50 +77,72 @@ def load_model(file_name):
     return loaded_model
 
 
-def get_score(lcode, lcome, oper, option):
+def get_score(d, option):
 
 	MODELCOMM = load_model('models/model_lr_codecomm')
-	MODELOP = load_model('models/model_lr_code_operands')
+	MODELCSV = load_model('models/model_lr_code_smells_violations')
+	MODELLCOMP = load_model('models/model_lr_ncloc_classes')
+	MODELVMIN = load_model('models/model_lr_violations_minor')
+	MODELLF = load_model('models/model_lr_ncloc_functions')
+	MODELLCOMP2 = load_model('models/model_lr_ncloc_classes_2')
+	MODELLF2 = load_model('models/model_lr_ncloc_functions_min')
 
-	compred = math.floor((MODELCOMM.predict(lcode))[0][0])
-	oppred  = math.floor((MODELOP.predict(lcode))[0][0])
+	compred = math.floor((MODELCOMM.predict(float(d['ncloc'])))[0][0])
+	csvpred = math.floor((MODELCSV.predict(float(d['code_smells'])))[0][0])
+	if int(d['ncloc']) < 6700:
+		lcpred = math.floor((MODELLCOMP2.predict(float(d['ncloc'])))[0][0])
+	else:
+		lcpred = math.floor((MODELLCOMP.predict(float(d['ncloc'])))[0][0])
+	vminpred = math.floor((MODELVMIN.predict(float(d['violations'])))[0][0])
+	if int(d['ncloc']) < 4300:
+		nclocfunpred = math.floor((MODELLF2.predict(float(d['ncloc'])))[0][0])
+	else:
+		nclocfunpred = math.floor((MODELLF.predict(float(d['ncloc'])))[0][0])
 
 	if compred < 0:
 		compred = 0
-	if oppred < 0:
-		oppred = 0
 
-	#with open('cfg/score_rules.json') as json_data:
-    #	d = json.load(json_data)
-
-	if option == "comments":
-		m = lcome
+	if option == "comments" or option == "functions" or option == "classes":
+		if compred < 0:
+			compred = 0
+		m = d[option]
 		mp = compred
-	else:
-		m = oper
-		mp = oppred
-	score = 0
-	dif = abs(m - mp)
-	if mp != 0:
-		p = dif * 100 / mp
-	else:
-		# no data, new project
-		p = 100
-	if p <= 10:
-		score = 5
-	elif p <= 20:
-		score = 4
-	elif p <= 35:
-		score = 3
-	elif p <= 50:
-		score = 2
-	else:
-		score = 1
+		score = 0
+		dif = abs(m - mp)
+		if mp != 0:
+			p = dif * 100 / mp
+		else:
+			p = 100
+		if p <= 10:
+			score = 5
+		elif p <= 25:
+			score = 4
+		elif p <= 45:
+			score = 3
+		elif p <= 70:
+			score = 2
+		else:
+			score = 1
 
-	return score
+		return score
+
+	elif option == "code_smells_viola":
+		m = d['code_smells']
+		mp = csvpred
+	elif option == "complexity":
+		m = d['lines']
+		mp = lcpred
+	elif option == "violations":
+		m = d['violations']
+		mp = vminpred
+	else:
+		m = d['functions']
+		mp = nclocfunpred
+
+	return 3
 
 
-def add_phase(index, code, comm, op, username):
+def add_phase(index, d, username):
 
 	ES_HOST    = {"host" : "localhost", "port" : 9200}
 	INDEX_NAME = 'measure_' + username + "_" + index
@@ -129,27 +151,63 @@ def add_phase(index, code, comm, op, username):
 	es = Elasticsearch()
 
 	MODELCOMM = load_model('models/model_lr_codecomm')
-	MODELOP = load_model('models/model_lr_code_operands')
+	MODELCSV = load_model('models/model_lr_code_smells_violations')
+	MODELLCOMP = load_model('models/model_lr_ncloc_classes')
+	MODELVMIN = load_model('models/model_lr_violations_minor')
+	MODELLF = load_model('models/model_lr_ncloc_functions')
+	MODELLCOMP2 = load_model('models/model_lr_ncloc_classes_2')
+	MODELLF2 = load_model('models/model_lr_ncloc_functions_min')
 
-	compred = math.floor((MODELCOMM.predict(code))[0][0])
-	oppred  = math.floor((MODELOP.predict(code))[0][0])
+	compred = math.floor((MODELCOMM.predict(float(d['ncloc'])))[0][0])
+	csvpred = math.floor((MODELCSV.predict(float(d['code_smells'])))[0][0])
+	if int(d['ncloc']) < 6700:
+		lcpred = math.floor((MODELLCOMP2.predict(float(d['ncloc'])))[0][0])
+	else:
+		lcpred = math.floor((MODELLCOMP.predict(float(d['ncloc'])))[0][0])
+	vminpred = math.floor((MODELVMIN.predict(float(d['violations'])))[0][0])
+	if int(d['ncloc']) < 4300:
+		nclocfunpred = math.floor((MODELLF2.predict(float(d['ncloc'])))[0][0])
+	else:
+		nclocfunpred = math.floor((MODELLF.predict(float(d['ncloc'])))[0][0])
 
 	if compred < 0:
 		compred = 0
-	if oppred < 0:
-		oppred = 0
+	if csvpred < 0:
+		csvpred = 0
+	if lcpred < 0:
+		lcpred = 0
+	if vminpred < 0:
+		vminpred = 0
+	if vminpred > int(d['violations']):
+		vminpred = d['violations']
+	if nclocfunpred < 0:
+		nclocfunpred = 0
+	if nclocfunpred > float(d['ncloc']) * 5:
+		nclocfunpred = float(d['ncloc']) / 5
 
 	x = es.index(index=INDEX_NAME, doc_type='metric', body={
 		'user': username,
 		'insert_date': int(time.time() * 1000),
-		'lcode': code,
-		'lcom': comm,
-		'lcom_pred': compred,
-		'operands': op,
-		'operands_pred': oppred
+		'lines': float(d['lines']),
+		'ncloc': float(d['ncloc']),
+		'comments': float(d['comment_lines']),
+		'comments_pred': compred,
+		'violations': float(d['violations']),
+		'violations_pred': csvpred,
+		'minor_violations': float(d['minor_violations']),
+		'minor_violations_pred': vminpred,
+		'major_violations': float(d['major_violations']),
+		'code_smells': float(d['code_smells']),
+		'bugs': float(d['bugs']),
+		'vulnerabilities': float(d['vulnerabilities']),
+		'files': float(d['files']),
+		'classes': float(d['classes']),
+		'classes_pred': lcpred,
+		'functions': float(d['functions']),
+		'functions_pred': nclocfunpred,
+		'complexity': float(d['complexity']),
 	})
 
-	print (x)
 
 def get_project_data(index, username):
 
@@ -210,11 +268,24 @@ def create_new_project(index, username):
 					'properties': {
 						'user': {'type': 'string'},
 						'insert_date': {'type': 'date'},
-						'lcode': {'type': 'float'},
-						'lcom': {'type': 'float'},
-						'lcom_pred': {'type': 'float'},
-						'operands': {'type': 'float'},
-						'operands_pred': {'type': 'float'}
+						'lines': {'type': 'float'},
+						'ncloc': {'type': 'float'},
+						'comments': {'type': 'float'},
+						'comments_pred': {'type': 'float'},
+						'violations': {'type': 'float'},
+						'violations_pred': {'type': 'float'},
+						'minor_violations': {'type': 'float'},
+						'minor_violations_pred': {'type': 'float'},
+						'major_violations': {'type': 'float'},
+						'code_smells': {'type': 'float'},
+						'bugs': {'type': 'float'},
+						'vulnerabilities': {'type': 'float'},
+						'files': {'type': 'float'},
+						'classes': {'type': 'float'},
+						'functions': {'type': 'float'},
+						'functions_pred': {'type': 'float'},
+						'complexity': {'type': 'float'},
+						'classes_pred': {'type': 'float'}
 					}}}
 		}
 
@@ -224,11 +295,24 @@ def create_new_project(index, username):
 	es.index(index=INDEX_NAME, doc_type='metric', id=0, body={
 		'user': username,
 		'insert_date': int(time.time() * 1000),
-		'lcode': 0,
-		'lcom': 0,
-		'lcom_pred': 0,
-		'operands': 0,
-		'operands_pred': 0
+		'lines': 0,
+		'ncloc': 0,
+		'comments': 0,
+		'comments_pred': 0,
+		'violations': 0,
+		'violations_pred': 0,
+		'minor_violations': 0,
+		'minor_violations_pred': 0,
+		'major_violations': 0,
+		'code_smells': 0,
+		'bugs': 0,
+		'vulnerabilities': 0,
+		'files': 0,
+		'classes': 0,
+		'functions': 0,
+		'functions_pred': 0,
+		'complexity': 0,
+		'classes_pred': 0
 	})
 
 
