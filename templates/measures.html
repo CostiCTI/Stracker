@@ -29,8 +29,7 @@
 
 <div class="tab">
   <button class="tablinks" onclick="openCity(event, 'Track')"> Track </button>
-  <button class="tablinks" onclick="openCity(event, 'Import')"> Import </button>
-  <button class="tablinks" onclick="openCity(event, 'Predict')"> Predict </button>
+  <button class="tablinks" onclick="openCity(event, 'Predict')"> Forecasting </button>
 </div>
 
 <div id="Track" class="tabcontent">
@@ -120,6 +119,23 @@
                 </form>
             </div>
 
+
+            <div style="width: 90%; margin-left: 5%; margin-top: 10%; background-color:white; text-align: center;">
+                <form action="" method="post" class="subform">
+                    <div>
+                   
+                    <div style="width: 80%; height: 45%; text-align: center;">
+                            {{ form.importbutton(class_="importbut") }}
+                    </div>
+                    <div style="width: 80%; height: 45%; text-align: center; margin-top: 2%">
+                        {{ form.delbutton(class_="delbut") }}
+                    </div>
+                      {{ form.csrf_token }}
+                    </div>
+                    <br>
+                    </form>
+            </div>
+
     </div>
             
     <div style="float: right; width: 80%">
@@ -131,34 +147,6 @@
 
 </div>
 
-<div id="Import" class="tabcontent">
-    
-        <form action="" method="post" class="subform">
-                <br>
-                <br>
-                <div style="height: 225px;">
-               
-                <div style="width: 33.3%; height: 80%; float: left; text-align: center;">
-                    {{ form.codelines.label(class_="plabel") }}
-                    {{ form.codelines(class_="ptxt") }}
-                </div>
-                <div style="width: 33.3%; height: 80%; float: left; text-align: center;">
-                        {{ form.importbutton(class_="importbut") }}
-                </div>
-                <div style="width: 33.3%; height: 80%; float: right; text-align: center;">
-                    {{ form.delbutton(class_="delbut") }}
-                </div>
-                  {{ form.csrf_token }}
-                </div>
-                <br>
-                </form>
-                <p style="margin-left: 5%;"> <b>Import data</b> - Enter Sonarqube project name that you want to import and
-                    push Import button <p>
-                <p style="margin-left: 5%;"> <b>Delete data</b> - Push Delete last button if you want to delete
-                    last registration of your project<p>
-                <br>
-                <br>
-</div>
 
 <div id="Predict" class="tabcontent">
     
@@ -319,9 +307,7 @@ function loadFun(evt, cityName) {
 
         .subform {
             font-family: 'Oswald', Helvetica, sans-serif;
-            font-size: 20px;
-            letter-spacing: 3px;
-            word-spacing: -8px;
+            font-size: 12px;
             color: tomato;
         }
 

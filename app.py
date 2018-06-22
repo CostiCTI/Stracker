@@ -200,9 +200,13 @@ def measures():
             return redirect(url_for('measures', metd=metdict, proname=p))
 
         elif "importbutton" in request.form:
-            sonar_project = str(request.form['codelines'])
+            # ! ! ! ! !
+            #sonar_project = str(request.form['codelines'])
 
             p = request.args.get('proname')
+
+            sonar_project = p
+
             data = son.get_sonar_data(sonar_project)
             if data == None:
                 time.sleep(1);
