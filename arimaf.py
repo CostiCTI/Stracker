@@ -1,3 +1,5 @@
+import copy
+
 from pandas import read_csv
 from pandas import datetime
 from matplotlib import pyplot
@@ -10,6 +12,7 @@ def get_forecast(history, l):
     lq = [1, 0, 2, 3, 4, 5]
     ld = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
+    hist = copy.deepcopy(history)
     for p in lp:
         for d in ld:
             for q in lq:
@@ -20,8 +23,8 @@ def get_forecast(history, l):
                         model_fit = model.fit(disp=0)
                         output = model_fit.forecast()
                         yhat = output[0]
-                        predictions.append(yhat)
-                        history.append(yhat)
+                        predictions.append(int(yhat))
+                        history.append(int(yhat))
                     print ('* * * * * *<><><><>><>')
                     print (predictions)
                     print ('* * * * * ** * * * * * ** * * ')
@@ -30,7 +33,8 @@ def get_forecast(history, l):
                     print ('EXCEPTIE')
 
 
-    predictions = [0 for i in range(l)]
+    predictions = [0 for i in range(l + 1)]
+    history = hist + predictions
     print ('* * * * * ** * * * * * ** * * ')
     print ('aici')
     print ('* * * * * ** * * * * * ** * * ')

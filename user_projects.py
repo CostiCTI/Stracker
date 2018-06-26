@@ -106,7 +106,12 @@ def get_score(d, option):
 		if compred < 0:
 			compred = 0
 		m = d[option]
-		mp = compred
+		if option == "comments":
+			mp = compred
+		elif option == "functions":
+			mp = nclocfunpred
+		else: #classes
+			mp = lcpred
 		score = 0
 		dif = abs(m - mp)
 		if mp != 0:
@@ -143,6 +148,11 @@ def get_score(d, option):
 
 
 def add_phase(index, d, username):
+
+	print ('<><><<><><><><>')
+	import pprint as pp
+	pp.pprint(d)
+	print ('<><><<><><><><>')
 
 	ES_HOST    = {"host" : "localhost", "port" : 9200}
 	INDEX_NAME = 'measure_' + username + "_" + index

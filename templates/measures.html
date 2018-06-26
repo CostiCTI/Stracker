@@ -28,7 +28,7 @@
     <h3 class="ptitle"> Project: {{pname}} </h3>
 
 <div class="tab">
-  <button class="tablinks" onclick="openCity(event, 'Track')"> Track </button>
+  <button class="tablinks" onclick="openCity(event, 'Track')"> Correlation </button>
   <button class="tablinks" onclick="openCity(event, 'Predict')"> Forecasting </button>
 </div>
 
@@ -125,7 +125,7 @@
                     <div>
                    
                     <div style="width: 80%; height: 45%; text-align: center;">
-                            {{ form.importbutton(class_="importbut") }}
+                        {{ form.importbutton(class_="importbut") }}
                     </div>
                     <div style="width: 80%; height: 45%; text-align: center; margin-top: 2%">
                         {{ form.delbutton(class_="delbut") }}
@@ -152,7 +152,11 @@
     
     <form class="ptitle" name=gform action="", method="post" style="text-align: center;">
             <div class="btn-group">
-                <input type = "submit" name = "arb5" value="Forecast" class="btn btn-primary" />
+                <input type = "submit" name = "arb5" value="Comments" class="btn btn-primary" />
+                <input type = "submit" name = "arb6" value="CodeSmells" class="btn btn-primary" />
+                <input type = "submit" name = "arb7" value="Violations" class="btn btn-primary" />
+                <input type = "submit" name = "arb8" value="Functions" class="btn btn-primary" />
+                <input type = "submit" name = "arb9" value="Classes" class="btn btn-primary" />
             </div>
     </form>
         
@@ -210,7 +214,7 @@ function loadFun(evt, cityName) {
         .tab button {
             background-color: inherit;
             float: left;
-            width: 10%;
+            width: 20%;
             outline: none;
             cursor: pointer;
             padding: 14px 16px;
@@ -256,15 +260,18 @@ function loadFun(evt, cityName) {
 
         .importbut {
             width: 90%;
-            height: 50%;
-            color: rgb(31, 29, 29) 
+            height: 80%;
+            color: rgb(31, 29, 29);
+            margin-left: 15%;
+            margin-top: 10%
         }
 
         .delbut {
             width: 90%;
-            height: 50%;
+            height: 80%;
             color: rgb(31, 29, 29);
-            margin-left: 5%;
+            margin-left: 15%;
+            background-color: rgb(180, 76, 76);
         }
 
         .sscore {
@@ -275,15 +282,14 @@ function loadFun(evt, cityName) {
         }
 
         .metr {
-            font-size: 15px;
+            font-size: 12px;
             color: rgb(31, 28, 27);
         }
 
         .gbutons {
             margin-left: 5%;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            letter-spacing: 1px;
             color: rgb(36, 33, 33);
         }
 
@@ -384,7 +390,7 @@ function loadFun(evt, cityName) {
     .containerlist input[type=radio]:checked ~ label{
         color: rgb(10, 168, 94);
         font-weight: 700;
-        font-size: 22px;
+        font-size: 16px;
     }
 
 
